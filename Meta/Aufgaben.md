@@ -21,11 +21,6 @@ _(Noch keine — Projekt in Konzeptphase)_
 
 | # | Aufgabe | Abhängigkeiten |
 |---|---------|----------------|
-| ~~#101~~ | ~~BG-RCI-Kategorienstruktur als JSON-Schema + Python-Dataclass aufsetzen~~ ✅ | — |
-| ~~#201~~ | ~~Prototyp-Prompt für Phase 1 (Notizen → Gefährdungen) ausarbeiten~~ ✅ | — |
-| ~~#202~~ | ~~Prototyp-Prompt für Phase 2 (Interview-Flow) ausarbeiten — Weg A + B getrennt~~ ✅ | — |
-| ~~#203~~ | ~~Prototyp-Prompt für Phase 3 (Risikobewertung) ausarbeiten~~ ✅ | — |
-| ~~#204~~ | ~~Prototyp-Prompt für Phase 4 (Maßnahmen nach STOP) ausarbeiten~~ ✅ | — |
 | #301 | RAG-Pipeline und Chunking-Strategie für Rechtsnormen definieren (ChromaDB) | — |
 | #302 | Gefährdungskatalog als strukturierte Datenquelle aufbereiten | — |
 | #401 | SvelteKit-Grundgerüst aufsetzen | — |
@@ -37,6 +32,13 @@ _(Noch keine — Projekt in Konzeptphase)_
 
 _(Keine — alle Aufgaben sind abrufbereit)_
 
-## Archiv — Erledigte und obsolete Aufgaben
+## Archiv — Erledigte Aufgaben
 
-_(Noch leer)_
+| # | Aufgabe | Erledigt |
+|---|---------|----------|
+| #101 | BG-RCI-Kategorienstruktur als JSON-Schema + Python-Dataclass | 2026-04-08 |
+| #201 | Prototyp-Prompt Phase 1 (Notizen → Gefährdungen) | 2026-04-08 |
+| #202 | Prototyp-Prompt Phase 2 (Ergänzung — Weg A + B) | 2026-04-08 |
+| #203 | Prototyp-Prompt Phase 3 (Risikobewertung) | 2026-04-08 |
+| #204 | Prototyp-Prompt Phase 4 (Maßnahmen nach STOP) | 2026-04-08 |
+| #205 | CLI-Prototyp: 4-Phasen-Pipeline gegen Claude API | 2026-04-08 |
