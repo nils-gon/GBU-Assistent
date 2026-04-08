@@ -21,7 +21,7 @@ _(Noch keine — Projekt in Konzeptphase)_
 
 | # | Aufgabe | Abhängigkeiten |
 |---|---------|----------------|
-| #101 | BG-RCI-Kategorienstruktur als JSON-Schema + Python-Dataclass aufsetzen | — |
+| ~~#101~~ | ~~BG-RCI-Kategorienstruktur als JSON-Schema + Python-Dataclass aufsetzen~~ ✅ | — |
 | ~~#201~~ | ~~Prototyp-Prompt für Phase 1 (Notizen → Gefährdungen) ausarbeiten~~ ✅ | — |
 | ~~#202~~ | ~~Prototyp-Prompt für Phase 2 (Interview-Flow) ausarbeiten — Weg A + B getrennt~~ ✅ | — |
 | ~~#203~~ | ~~Prototyp-Prompt für Phase 3 (Risikobewertung) ausarbeiten~~ ✅ | — |

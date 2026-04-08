@@ -205,7 +205,7 @@ Damit entfällt:
 
 - [x] Prototyp-Prompt für Phase 1 (Notizen → Gefährdungen) ausarbeiten
 - [x] Prototyp-Prompts für Phase 2–4 ausarbeiten
-- [ ] BG-RCI-Kategorienstruktur als Schema aufsetzen
+- [x] BG-RCI-Kategorienstruktur als Schema aufsetzen
 - [ ] Interview-Flow (Weg B) durchskizzieren
 - [ ] RAG-Pipeline und Chunking-Strategie für Rechtsnormen definieren
 - [ ] Word-/PDF-Template nach BG-RCI-Vorlage erstellen
