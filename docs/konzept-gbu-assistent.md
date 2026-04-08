@@ -204,7 +204,7 @@ Damit entfällt:
 ## Offene Nächste Schritte
 
 - [x] Prototyp-Prompt für Phase 1 (Notizen → Gefährdungen) ausarbeiten
-- [ ] Prototyp-Prompts für Phase 2–4 ausarbeiten
+- [x] Prototyp-Prompts für Phase 2–4 ausarbeiten
 - [ ] BG-RCI-Kategorienstruktur als Schema aufsetzen
 - [ ] Interview-Flow (Weg B) durchskizzieren
 - [ ] RAG-Pipeline und Chunking-Strategie für Rechtsnormen definieren
