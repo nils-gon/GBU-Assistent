@@ -4,12 +4,12 @@
 
 ## Entscheidungspunkte
 
-| # | Frage | Typ | Kontext | Betrifft |
-|---|-------|-----|---------|----------|
-| E1 | Welches Frontend-Framework? (React, Vue, Svelte, oder reines HTML+JS?) | Weichenstellung | Bestimmt gesamte Frontend-Architektur | #401 |
-| E2 | Welches Backend-Framework? (FastAPI, Express, oder serverless?) | Weichenstellung | Bestimmt Deployment und API-Struktur | #501 |
-| E3 | Welche Vektor-DB für RAG? (Chroma, Qdrant, Pinecone, oder dateisystem-basiert?) | Weichenstellung | Bestimmt RAG-Pipeline | #301 |
-| E4 | Word-Export-Bibliothek? (python-docx, docxtpl, oder andere?) | Schnellentscheidung | Für Phase 5 Berichterstellung | #601 |
+| # | Frage | Typ | Ergebnis | Datum |
+|---|-------|-----|----------|-------|
+| E1 | Frontend-Framework | Weichenstellung | **SvelteKit** | 2026-04-08 |
+| E2 | Backend-Framework | Weichenstellung | **FastAPI (Python)** | 2026-04-08 |
+| E3 | Vektor-DB für RAG | Weichenstellung | **ChromaDB** | 2026-04-08 |
+| E4 | Word-Export-Bibliothek | Schnellentscheidung | **python-docx** | 2026-04-08 |
 
 ## Abrufbereite Aufgaben
 
@@ -19,23 +19,23 @@ _(Noch keine — Projekt in Konzeptphase)_
 
 ### Komplexe Aufgaben (X) — einzeln startbar
 
-_(Noch keine abrufbereit — offene Entscheidungspunkte klären)_
+| # | Aufgabe | Abhängigkeiten |
+|---|---------|----------------|
+| #101 | BG-RCI-Kategorienstruktur als JSON-Schema + Python-Dataclass aufsetzen | — |
+| ~~#201~~ | ~~Prototyp-Prompt für Phase 1 (Notizen → Gefährdungen) ausarbeiten~~ ✅ | — |
+| #202 | Prototyp-Prompt für Phase 2 (Interview-Flow) ausarbeiten — Weg A + B getrennt | — |
+| #203 | Prototyp-Prompt für Phase 3 (Risikobewertung) ausarbeiten | — |
+| #204 | Prototyp-Prompt für Phase 4 (Maßnahmen nach STOP) ausarbeiten | — |
+| #301 | RAG-Pipeline und Chunking-Strategie für Rechtsnormen definieren (ChromaDB) | — |
+| #302 | Gefährdungskatalog als strukturierte Datenquelle aufbereiten | — |
+| #401 | SvelteKit-Grundgerüst aufsetzen | — |
+| #501 | FastAPI-Grundgerüst aufsetzen | — |
+| #502 | Claude-API-Integration (Systemprompts pro Phase) | #501 |
+| #601 | Word-Template nach BG-RCI-Vorlage erstellen (python-docx) | — |
 
 ## Aufgaben im Entwurf
 
-| # | Aufgabe | Größe | Offene Fragen |
-|---|---------|-------|---------------|
-| #101 | BG-RCI-Kategorienstruktur als JSON-Schema aufsetzen | X | Format: JSON-Schema oder Python-Dataclass? |
-| #201 | Prototyp-Prompt für Phase 1 (Notizen → Gefährdungen) ausarbeiten | X | — |
-| #202 | Prototyp-Prompt für Phase 2 (Interview-Flow) ausarbeiten | X | Weg A und Weg B getrennt oder kombiniert? |
-| #203 | Prototyp-Prompt für Phase 3 (Risikobewertung) ausarbeiten | X | — |
-| #204 | Prototyp-Prompt für Phase 4 (Maßnahmen nach STOP) ausarbeiten | X | — |
-| #301 | RAG-Pipeline und Chunking-Strategie für Rechtsnormen definieren | X | Vektor-DB? → E3 |
-| #302 | Gefährdungskatalog als strukturierte Datenquelle aufbereiten | X | Quelle: BG-RCI-Merkblätter, DGUV? |
-| #401 | Tech-Stack Frontend festlegen und Grundgerüst aufsetzen | X | Framework? → E1 |
-| #501 | Tech-Stack Backend festlegen und Grundgerüst aufsetzen | X | Framework? → E2 |
-| #502 | Claude-API-Integration (Systemprompts pro Phase) | X | Abhängig von #501 |
-| #601 | Word-/PDF-Template nach BG-RCI-Vorlage erstellen | X | Export-Lib? → E4 |
+_(Keine — alle Aufgaben sind abrufbereit)_
 
 ## Archiv — Erledigte und obsolete Aufgaben
 
