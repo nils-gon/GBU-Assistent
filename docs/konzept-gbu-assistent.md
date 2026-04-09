@@ -191,11 +191,22 @@ Damit entfällt:
 
 ---
 
-## Offene Fragen / Nächste Schritte
+## Tech-Stack (entschieden 2026-04-08)
 
-- [ ] Prototyp-Prompt für eine der 5 Phasen ausarbeiten
-- [ ] BG-RCI-Kategorienstruktur als Schema aufsetzen
+| Komponente | Technologie |
+|------------|-------------|
+| Frontend | **SvelteKit** |
+| Backend | **FastAPI (Python)** |
+| Vektor-DB (RAG) | **ChromaDB** |
+| Word-Export | **python-docx** |
+| LLM | Claude API (Anthropic) |
+
+## Offene Nächste Schritte
+
+- [x] Prototyp-Prompt für Phase 1 (Notizen → Gefährdungen) ausarbeiten
+- [x] Prototyp-Prompts für Phase 2–4 ausarbeiten
+- [x] BG-RCI-Kategorienstruktur als Schema aufsetzen
 - [ ] Interview-Flow (Weg B) durchskizzieren
 - [ ] RAG-Pipeline und Chunking-Strategie für Rechtsnormen definieren
 - [ ] Word-/PDF-Template nach BG-RCI-Vorlage erstellen
-- [ ] Tech-Stack festlegen (Frontend-Framework, Backend, Vektor-DB)
+- [x] Tech-Stack festlegen (Frontend-Framework, Backend, Vektor-DB)

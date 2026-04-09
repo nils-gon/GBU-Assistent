@@ -1,29 +1,29 @@
 # Roadmap — GBU-Assistent
 
-## Stufe 0 — Konzept und Entscheidungen (aktuell)
+## Stufe 0 — Konzept und Entscheidungen ✅
 
 **Ziel:** Alle Grundsatzentscheidungen treffen, bevor Code geschrieben wird.
 
 **Schritte:**
 1. Konzeptdokument erstellen ✅
-2. Meta-Struktur aufbauen (Aufgaben, Ideen, Roadmap)
-3. Tech-Stack-Entscheidungen treffen (Frontend, Backend, Vektor-DB, Export)
-4. BG-RCI-Kategorienstruktur als Schema definieren
-5. Prototyp-Prompts für alle 5 Phasen ausarbeiten
+2. Meta-Struktur aufbauen (Aufgaben, Ideen, Roadmap) ✅
+3. Tech-Stack-Entscheidungen treffen (SvelteKit, FastAPI, ChromaDB, python-docx) ✅
+4. BG-RCI-Kategorienstruktur als Schema definieren ✅
+5. Prototyp-Prompts für Phase 1–4 ausarbeiten ✅
 
 **Ergebnis:** Klare Architektur, getestete Prompts, Technologie-Entscheidungen dokumentiert.
 
 ---
 
-## Stufe 1 — Prompt-Prototyp (CLI)
+## Stufe 1 — Prompt-Prototyp (CLI) (aktuell)
 
 **Ziel:** Den 5-Phasen-Workflow als reines Prompt-Engineering validieren — ohne UI, ohne RAG.
 
 **Schritte:**
-1. Phase 1 (Notizen → Gefährdungen) als Claude-API-Call implementieren
-2. Phase 2 (Ergänzung/Interview) als Claude-API-Call implementieren
-3. Phase 3 (Risikobewertung) als Claude-API-Call implementieren
-4. Phase 4 (Maßnahmen nach STOP) als Claude-API-Call implementieren
+1. Phase 1 (Notizen → Gefährdungen) als Claude-API-Call implementieren ✅
+2. Phase 2 (Ergänzung/Interview) als Claude-API-Call implementieren ✅
+3. Phase 3 (Risikobewertung) als Claude-API-Call implementieren ✅
+4. Phase 4 (Maßnahmen nach STOP) als Claude-API-Call implementieren ✅
 5. Phase 5 (Berichterstellung) als Word-Export implementieren
 6. End-to-End-Test mit realistischen Begehungsnotizen
 
