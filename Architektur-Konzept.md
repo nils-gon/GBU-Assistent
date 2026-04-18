@@ -138,3 +138,47 @@ Die Wissensbasis ist für **alle Nutzer identisch**. Sie wird versioniert (Norm-
 | **Session-Daten** | Nur zur Laufzeit (Browser/RAM) | Konkrete Begehungsnotizen, Gefährdungsliste, Bewertungen, generierter Bericht |
 
 Die Pipeline darf aus der Wissensbasis **lesen**, aber **nie** Session-Daten zurück in die Wissensbasis schreiben. Das ist der bauliche Garant für das Stateless-Prinzip.
+
+---
+
+## 4 Workflow-Pipeline (5 Phasen)
+
+Die Pipeline ist das Herzstück des Systems. Sie realisiert den 5-Phasen-Prozess als Kette von Claude-API-Aufrufen mit Phase-spezifischen Systemprompts. Jede Phase hat einen klar definierten Input, Output und eine Rolle der Fachkraft (Bestätigung, Entscheidung, Verantwortung).
+
+### Phasen-Übersicht
+
+| Phase | Zweck | Input | Output | RAG? | Prompt-Datei |
+|-------|-------|-------|--------|------|--------------|
+| **1 — Eingabe** | Extrahiert Gefährdungen aus Freitextnotizen, ordnet BG-RCI-Kategorien zu | Begehungsnotizen (Freitext) | Strukturierte Gefährdungsliste (JSON) | — | `prompts/phase1_notizen_zu_gefaehrdungen.md` |
+| **2 — Ergänzung** | Schlägt fehlende typische Gefährdungen vor (Weg A: auto, Weg B: Interview) | Gefährdungsliste + Branche | Ergänzte Gefährdungsliste | **ja** (Gefährdungskataloge) | `prompts/phase2_ergaenzung.md` |
+| **3 — Risikobewertung** | Bewertet Eintrittswahrscheinlichkeit und Schwere je Gefährdung | Ergänzte Gefährdungsliste | Priorisierte Risikomatrix | — | `prompts/phase3_risikobewertung.md` |
+| **4 — Maßnahmen (STOP)** | Schlägt Maßnahmen in S/T/O/P-Hierarchie vor, verknüpft mit Rechtsnorm | Risikomatrix | Maßnahmenplan mit Rechtsreferenzen | **ja** (Rechtsnormen) | `prompts/phase4_massnahmen_stop.md` |
+| **5 — Berichterstellung** | Rendert Word-/PDF-Bericht nach BG-RCI-Schema | Vollständiger Session-State | Bericht-Datei (Download) | — | noch offen (Template-basiert, kein Claude-Call nötig) |
+
+Die ausführliche Workflow-Beschreibung (Verantwortungsmodell, Weg-A vs. Weg-B, Bewertungsregeln, STOP-Hierarchie) liegt in `docs/konzept-gbu-assistent.md`. Dieses Dokument definiert nur die **architektonische Einbettung**.
+
+### Pipeline-Bausteine
+
+| Baustein | Aktueller Ort | Zielzustand | Zweck |
+|----------|--------------|-------------|-------|
+| **Systemprompts** | `prompts/phase{1–4}_*.md` | bleibt | Natürlichsprachliche Anweisung an Claude je Phase |
+| **Schemas** | `schemas/bgr_ci_kategorien.py` | `Referenz/Schema/` | JSON-Schema + Python-Dataclasses zur Validierung |
+| **Orchestrator (CLI)** | `cli/run_pipeline.py` | `cli/` (bleibt für Tests/Evals) | Lokaler End-to-End-Test der 4+1 Phasen |
+| **Orchestrator (Web)** | — (noch zu bauen) | `backend/pipeline/` | Produktiver Aufruf durch die Web-App |
+| **Beispiel-Inputs** | `cli/beispiel_*.txt` | bleibt | Realistische Testnotizen (kundenneutral) |
+
+**Zwei Orchestratoren, ein Prompt-Satz.** CLI- und Web-Orchestrator nutzen dieselben Systemprompts und Schemas aus der Wissensbasis. Damit ist jede Prompt-Änderung sofort in beiden Wegen wirksam und ein Prompt-Regressionstest kann gegen die CLI laufen, bevor er in der Web-App landet.
+
+### Kontrakt je Phase
+
+Jede Phase folgt dem gleichen Kontrakt:
+
+1. **Eingabe:** strukturiertes Objekt (ausgenommen Phase 1 — dort Freitext).
+2. **Systemprompt:** aus `prompts/`, bindend. Temperature = 0 für deterministische Extraktion, Temperature > 0 nur bei kreativen Aufgaben (aktuell nirgends).
+3. **RAG-Kontext:** bei Phase 2 und 4 wird vor dem Call ein Retrieval ausgeführt, das Ergebnis wird als zusätzlicher User-Message-Block übergeben.
+4. **Ausgabe:** valides JSON gegen das Phase-Schema. Bei Schema-Bruch einmal Retry mit Fehlermeldung; bei zweitem Fehlschlag Session-Abbruch mit klarer Nutzerfehlermeldung.
+5. **Verantwortung:** die Ausgabe ist ein **Vorschlag**. Erst die Bestätigung/Bearbeitung durch die Fachkraft macht sie verbindlich (→ Verantwortungsmodell in `docs/konzept-gbu-assistent.md`).
+
+### Prompt-Versionierung
+
+Systemprompts sind Teil des Projekts und werden versioniert. Jede inhaltliche Änderung an einem Prompt ist ein bewusster Schritt mit Begründung im Commit-Text. Vor dem Deployment wird ein Prompt-Regressionslauf (CLI-Beispiele) ausgeführt; Abweichungen werden bewertet, bevor der neue Prompt produktiv geht. Analog zur Skill-Versionierung in Schulmaterial — aber hier ohne dedizierten `skill_sync_check`, weil es nur eine einzige Quelle (`prompts/`) gibt.
