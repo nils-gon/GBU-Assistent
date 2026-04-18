@@ -44,3 +44,46 @@ Das System besteht aus mehreren Bereichen mit unterschiedlichen Aufgaben und Än
 **Statelessness ist kein Feature, sondern ein Architekturprinzip.** Es prägt jeden Bereich: keine Nutzerdatenbank, keine Persistenz, keine Accounts, keine Session-Logs. Session-Daten existieren nur im Browser oder im Arbeitsspeicher des Backends während einer aktiven Sitzung. Dieses Prinzip ist Grundlage des Datenschutzmodells (→ Abschnitt 7) und bindend für alle Architekturentscheidungen.
 
 Die Wissensbasis konsumiert die Pipeline, um Maßnahmenvorschläge mit Rechtsreferenzen zu erzeugen — sie existiert aber unabhängig von der Pipeline und wird durch eigene Prozesse (Norm-Updates, Katalogpflege) gepflegt.
+
+---
+
+## 2 Architektur: Die vier Bereiche
+
+| Bereich | Ordner (Zielzustand) | Zweck | Änderungszyklen |
+|---------|---------------------|-------|-----------------|
+| **Wissensbasis** | `Referenz/` | Kundenneutrale Quelldaten: Rechtsnormen, Gefährdungskataloge, BG-RCI-Schema, Berichtsvorlagen | Selten — wächst durch Norm-Updates und Katalogpflege |
+| **Workflow-Pipeline** | `prompts/`, `schemas/`, `cli/` (später `backend/pipeline/`) | Werkzeuge des 5-Phasen-Prozesses: Systemprompts, Schemas, Orchestrator | Mittel — wächst mit Prompt-Iterationen und neuen Phasen-Varianten |
+| **Anwendung** | `frontend/`, `backend/` (noch zu bauen) | Nutzbare stateless Web-App: UI, API, Session-Orchestrierung, Export | Hoch — aktive Produktentwicklung |
+| **Meta** | `Meta/`, `docs/` | Projektsteuerung: Aufgaben, Ideen, Roadmap, Architektur- und Konzeptdokumente | Häufig — laufende Projektarbeit |
+
+**Session-Artefakte** (der generierte Bericht pro Sitzung) haben bewusst **keinen Ordner im Repo**: sie sind flüchtig, werden nach Session-Ende verworfen und nur über den Download zur Fachkraft ausgeliefert. Das ist die bauliche Konsequenz aus dem Stateless-Prinzip.
+
+### Beziehungen
+
+```
+Meta (Projektsteuerung)
+  │
+  ├── steuert ──→ Wissensbasis         (Norm-Pflege, Katalogaufbau, Qualitätssicherung)
+  ├── steuert ──→ Workflow-Pipeline    (Prompt-Entwicklung, Schema-Design, Test)
+  ├── steuert ──→ Anwendung            (Frontend, Backend, Integration, Deployment)
+  │
+  └── Anwendung
+        ├── ruft auf ──→ Workflow-Pipeline   (je Phase einen Claude-API-Call)
+        │                    │
+        │                    └── liest ──→ Wissensbasis   (RAG-Retrieval pro Phase)
+        │
+        └── liefert aus ──→ Session-Artefakt (Bericht-Download, nicht gespeichert)
+```
+
+Der Meta-Bereich ist die **übergeordnete Ebene**. Er umfasst alle Steuerungsdateien, die das System weiterentwickeln — sowohl die Wissensbasis, die Pipeline als auch die Anwendung. Die Anwendung ist zur Laufzeit der einzige Einstiegspunkt; sie kapselt die Pipeline und liest die Wissensbasis. Die Pipeline ist das Herzstück — die Anwendung ist ihre Trägerin.
+
+### Abgrenzung der Bereiche
+
+| Frage | Zuständiger Bereich |
+|-------|--------------------|
+| Welche Systemprompts laufen in welcher Phase? | Workflow-Pipeline (`prompts/`, Details in `docs/konzept-gbu-assistent.md`) |
+| Welche Rechtsnormen stehen für RAG zur Verfügung? | Wissensbasis (`Referenz/`) |
+| Wie sieht die UI der Phase 3 aus? | Anwendung (`frontend/`) |
+| Wie ist die Ordnerstruktur auf Dach-Ebene? | Dieses Dokument |
+| Welche Aufgaben sind abrufbereit? | Meta (`Meta/Aufgaben.md`) |
+| Wie wird der Bericht gerendert? | Anwendung (`backend/`), unter Nutzung der Vorlage aus Wissensbasis |
