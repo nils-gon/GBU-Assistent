@@ -87,3 +87,54 @@ Der Meta-Bereich ist die **übergeordnete Ebene**. Er umfasst alle Steuerungsdat
 | Wie ist die Ordnerstruktur auf Dach-Ebene? | Dieses Dokument |
 | Welche Aufgaben sind abrufbereit? | Meta (`Meta/Aufgaben.md`) |
 | Wie wird der Bericht gerendert? | Anwendung (`backend/`), unter Nutzung der Vorlage aus Wissensbasis |
+
+---
+
+## 3 Wissensbasis (RAG)
+
+Die Wissensbasis ist die fachliche Grundlage des gesamten Systems. Sie wird von der Pipeline über RAG-Retrieval gelesen, aber **nicht** von der Pipeline verwaltet. Die Pflege der Wissensbasis ist eine eigenständige, kundenneutrale Projektaufgabe — sie enthält **keinerlei** betriebsspezifische Daten.
+
+### Struktur (Zielzustand)
+
+| Unterordner | Inhalt | Rolle im Workflow |
+|-------------|--------|-------------------|
+| `Referenz/Rechtsnormen/` | Gesetzestexte, Verordnungen, Regeln: ArbSchG, BetrSichV, GefStoffV, ArbStättV, TRBS, TRGS, DGUV-Vorschriften/Regeln/Informationen, BG-RCI-Merkblätter | RAG-Quelle für Phase 4 (Rechtsreferenz zu Maßnahmen) |
+| `Referenz/Gefaehrdungskataloge/` | Typische Gefährdungen pro Branche/Tätigkeit, strukturiert nach BG-RCI-Kategorien | RAG-Quelle für Phase 2 (Ergänzungsvorschläge + Interviewfragen) |
+| `Referenz/Schema/` | BG-RCI-Kategorienstruktur und Ein-/Ausgabe-Schemas (JSON/Dataclass) | Validierung für Phasen 1–4 (aktuell unter `schemas/`) |
+| `Referenz/Berichtsvorlagen/` | Word-/PDF-Vorlagen nach BG-RCI-Schema | Rendering-Basis für Phase 5 |
+
+Aktuell liegt die Schema-Komponente noch unter `schemas/bgr_ci_kategorien.py`. Die Verschiebung nach `Referenz/Schema/` gehört zum Zielzustand und wird beim Aufbau der RAG-Pipeline (Roadmap Stufe 2) vollzogen.
+
+### RAG-Architektur
+
+**Zwei Schichten — beide ohne Kundendaten:**
+
+1. **Rechtsnormen-Korpus** — durchsuchbare Paragrafenchunks mit Metadaten (Norm-ID, Fassung, Paragraf). Wird in Phase 4 abgefragt, um Maßnahmenvorschläge mit konkreter Rechtsgrundlage zu belegen.
+2. **Gefährdungskataloge** — strukturierte Liste typischer Gefährdungen je Branche/Tätigkeit. Wird in Phase 2 abgefragt, um automatisch Ergänzungsvorschläge zu generieren (Weg A) bzw. Interview-Fragen zu formulieren (Weg B).
+
+**Chunking-Strategie:**
+
+- Rechtsnormen: ein Chunk pro Paragraf/Absatz, Metadaten (Norm, Fassung, Paragraf, Thema).
+- Gefährdungskataloge: ein Chunk pro Gefährdungseintrag, Metadaten (Branche, Tätigkeit, BG-RCI-Kategorie).
+
+**Retrieval:** Hybrid — semantisch (Embeddings) + Keyword (BM25). Vektor-DB: ChromaDB (Entscheidung E3).
+
+Die Wissensbasis ist für **alle Nutzer identisch**. Sie wird versioniert (Norm-Fassungen), damit ein Bericht nachvollziehbar auf einen definierten Stand verweisen kann.
+
+### Regeln für Wissensbasis-Dateien
+
+- **Quellenangabe ist Pflicht.** Jeder Rechtsnorm-Chunk trägt Norm-ID, Fassung und Paragraf. Jeder Gefährdungskatalog-Eintrag nennt die Quelle (z.B. BG-RCI-Merkblatt M-001).
+- **Keine Kundendaten.** Kein Betriebsname, keine Personennamen, kein Standort, keine branchenspezifischen Interna einer realen Firma — auch nicht in Beispielen. Test-Beispiele werden aus `cli/beispiel_*.txt` gelesen, nicht in die Wissensbasis aufgenommen.
+- **Keine Redundanz.** Ein Paragraf wird genau einmal gechunkt. Querverweise über Norm-ID statt Duplikate.
+- **LaTeX für Formeln.** Inline `$...$`, Display `$$...$$` — ausnahmslos (analog Schulmaterial-Regel).
+- **Rechtsreferenz mit Norm-ID.** Im Fließtext immer mit Norm-ID (z.B. ArbSchG §5, TRGS 400) — nie verkürzt.
+- **Versionierung.** Bei Norm-Änderung wird eine neue Fassung eingespielt, die alte bleibt erhalten (nachvollziehbare Rechtsgrundlage für archivierte Berichte — falls ein Nutzer sie später wieder hochlädt).
+
+### Abgrenzung: Wissensbasis vs. Session-Daten
+
+| Ebene | Persistenz | Inhalt |
+|-------|-----------|--------|
+| **Wissensbasis** | Dauerhaft im Repo + Vektor-DB | Kundenneutrale Referenzen (Normen, Kataloge, Schemas, Vorlagen) |
+| **Session-Daten** | Nur zur Laufzeit (Browser/RAM) | Konkrete Begehungsnotizen, Gefährdungsliste, Bewertungen, generierter Bericht |
+
+Die Pipeline darf aus der Wissensbasis **lesen**, aber **nie** Session-Daten zurück in die Wissensbasis schreiben. Das ist der bauliche Garant für das Stateless-Prinzip.
